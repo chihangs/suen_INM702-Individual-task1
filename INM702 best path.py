@@ -21,7 +21,7 @@ import itertools
 random.seed(1)
 rng = np.random.default_rng()
 
-#random function by discrete uniform distribution
+#random functions
 def uniform_integer (mean=4.5, variance=8.25):
     return np.random.randint(0, mean*2+1)
 
@@ -48,7 +48,13 @@ def Lshape_path(grid_2Darray):
     time = np.sum(grid_2Darray * L_path)
     return L_path, time
 
+
+
 def naive_path(grid_2Darray):
+    """
+    All combinations of right and down are calculated to get the minimum path, 
+    with total no. of steps = (no. of rows -1) + (no. of columns -1). 
+    """
     rows, columns = np.shape(grid_2Darray)
     
     if rows == 1 or columns == 1:   #check for trivial case
@@ -88,13 +94,23 @@ def naive_path(grid_2Darray):
         
     return n_path, best_time
 
+
+"""
+Naïve_split_path below is created by splitting the grid into two triangles along a diagonal, 
+as the path must pass through at least one cell of the diagonal, 
+which is each treated as end-point of first part and start-point of the second part.  
+Run the naïve algorithm for each diagonal cell twice for each part 
+(which is much smaller than the whole triangle) and sum up the result, 
+then we can choose the diagonal cell through which the combined path is the shortest. 
+For non-square grid, shorter side is used to choose “diagonal” cells. 
+"""
 def naive_split_path(grid_2Darray):
     rows, columns = np.shape(grid_2Darray)
     
     if comb(rows+columns-2, rows-1) < 1000:
         n_path, best_time = naive_path(grid_2Darray)
     else:
-        best_time = np.max(grid_2Darray)*(rows+columns-2)
+        best_time = np.max(grid_2Darray)*(rows+columns-2)  #initiate with a large num
         n_path = np.zeros((rows, columns))
         #split by checking diagonal points
         for i in range(min(rows,columns)):
