@@ -18,7 +18,7 @@ import scipy.stats.distributions
 import itertools
 
 
-random.seed(1)
+np.random.seed(1)
 rng = np.random.default_rng()
 
 #random functions
